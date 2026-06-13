@@ -42,3 +42,19 @@ ExamenFinalAnalisis/
 │   └── EnvioServiceTests.cs  # 25 casos de prueba ejecutados con éxito
 ├── Dockerfile                # Configuración de despliegue en la nube
 └── README.md                 # Documentación técnica
+
+graph TD
+    Inicio([Inicio: Cliente solicita envío]) --> Registrado[Estado: Registrado\nTarifa y NIT calculados]
+    
+    Registrado -->|Anulación| Cancelado([Estado: Cancelado\nFin])
+    Registrado -->|Despachado| EnTransito[Estado: En Tránsito]
+    
+    EnTransito -->|Llega a destino| EnReparto[Estado: En Reparto]
+    
+    EnReparto -->|Entrega Exitosa| Entregado([Estado: Entregado\nFin])
+    EnReparto -->|Entrega Fallida| DecisionIntentos{¿Intentos fallidos >= 3?}
+    
+    DecisionIntentos -->|No| EnReparto
+    DecisionIntentos -->|Sí| EnDevolucion[Estado: En Devolución]
+    
+    EnDevolucion -->|Regresa a origen| Devuelto([Estado: Devuelto\nFin])
